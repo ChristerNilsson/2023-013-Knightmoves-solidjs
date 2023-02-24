@@ -19,6 +19,24 @@ Numrering av schackbrädet
    a  b  c  d  e  f  g  h
 ```
 
+Visning av möjliga drag
+```
+8  3 0 1 2 3 0 1 2
+7  2 3 0 1 2 3 0 1
+6  1 2 3 0 1 2 3 0
+5  0 1 2 3 0 1 2 3 
+4  3 0 1 2 3 0 1 2
+3  2 3 0 1 2 3 0 1
+2  1 2 3 0 1 2 3 0
+1  0 1 2 3 0 1 2 3
+   a b c d e f g h
+
+0: Ingen visning (svårast)
+1: Visning av damens drag
+2: Visning av springarens drag
+3: Visning av bådas drag (lättast)
+```
+
 # Datastrukturer
 * queens: en lista med möjliga rutor för damen
   * Visas med ett antal damer
@@ -50,7 +68,12 @@ Detta genom att utnyttja
 
 Exempel:
 ```js
-div {}, "Hello World"
+	svg
+		viewBox : "0 0 #{10*S} #{12*S}"
+		width : 8*S
+		height : 8*S
+		showRects()
+		showLittera()
 ```
 
 Detta innebär att man kan deploya överallt
@@ -76,3 +99,17 @@ Dessa fungerar både lokalt och med Github Pages.
 * index.html: ./js/sketch.js
 * sketch.coffee: ../js/utils.js
 
+# Reaktivitet
+Testade att ta bort alla signaler.  
+Fungerade utmärkt, dock skapades ett bräde för varje klick.  
+Tömning av body plus omritning av allt löste problemet.  
+Se sketch8.coffee resp utils8.js  
+Gick ej att se några prestandaskillnader, varken tid eller data.  
+```js
+click = (index) ->
+	if state == 0 then state0 index
+	else if state == 1 then state1 index
+	else state2 index
+	document.body.innerHTML = ''
+	r4r => game
+```
