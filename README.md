@@ -106,8 +106,8 @@ I [_.set](https://lodash.com/docs/4.17.15#set) anger man en path, t ex "a[2].b"
 # Referenser
 Möjligt att dessa kan förenklas.
 Dessa fungerar både lokalt och med Github Pages.
-* index.html: ./js/sketch.js
-* sketch.coffee: ../js/utils.js
+* index.html: ./js/sketch.js (en punkt)
+* sketch.coffee: ../js/utils.js (två punkter)
 
 # Reaktivitet
 Testade att ta bort alla signaler.  
