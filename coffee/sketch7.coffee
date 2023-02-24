@@ -41,7 +41,7 @@ makeQueens = => # anger de rutor som damen kan placeras på
 
 makeQueen = (queen) => show 'queen', queen
 
-makeMask = (queen) => show 'mask', (row(queen)+col(queen)) % 4
+makeMask = (queen) => show 'mask', 3 - (row(queen)+col(queen)) % 4
 
 makeIllegals = (queen) =>
 	if queen==-1 then return []

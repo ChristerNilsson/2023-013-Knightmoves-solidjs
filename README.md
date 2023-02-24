@@ -1,10 +1,34 @@
-# 2023-012-solid-coffee-hyper-lab
+# 2023-013-Knight Moves - SolidJS
 
 Uppgiften består av
 1. Placera en dam på en tillåten ruta.  
 2. Placera en springare på högsta tillåten ruta.
 3. Förflytta springaren till nästa tillåtna ruta.
 4. Upprepa tills alla rutor besökts.
+
+Damen kan inte placeras var som helst.  
+T ex inte på a4, då kan springaren inte nå a1.  
+Detta pga att springare och dam ej får ta varandra.  
+
+Visning av möjliga drag
+```
+8  - B N Q - B N Q
+7  Q - B N Q - B N
+6  N Q - B N Q - B
+5  B N Q - B N Q -
+4  - B N q - B N Q
+3  Q - B N q - B N
+2  N Q - B N Q - B
+1  B N Q - B N Q -
+   a b c d e f g h
+
+B: (Båda)   Visning av båda pjäsernas drag
+N: (Knight) Visning av springarens drag
+Q: (Queen)  Visning av damens drag
+-:          Ingen visning av drag (svårast)
+```
+
+# Teknisk information
 
 Numrering av schackbrädet
 ```
@@ -19,25 +43,9 @@ Numrering av schackbrädet
    a  b  c  d  e  f  g  h
 ```
 
-Visning av möjliga drag
-```
-8  3 0 1 2 3 0 1 2
-7  2 3 0 1 2 3 0 1
-6  1 2 3 0 1 2 3 0
-5  0 1 2 3 0 1 2 3 
-4  3 0 1 2 3 0 1 2
-3  2 3 0 1 2 3 0 1
-2  1 2 3 0 1 2 3 0
-1  0 1 2 3 0 1 2 3
-   a b c d e f g h
-
-0: Ingen visning (svårast)
-1: Visning av damens drag
-2: Visning av springarens drag
-3: Visning av bådas drag (lättast)
-```
-
 # Datastrukturer
+* state: 0,1 eller 2
+
 * queens: en lista med möjliga rutor för damen
   * Visas med ett antal damer
 * queen: ett index som anger var damen placerades
@@ -46,16 +54,18 @@ Visning av möjliga drag
 	* Visas med svarta cirklar
 * targets: övriga rutor
 	* blanka
+* taken: antal targets som uppnåtts
 * knight: ett index som visar var springaren befinner sig
 	* Visas med en springare
 * target: den ruta som springaren ska uppnå
 	* Visas med en ring
 * knightHops: de rutor springaren kan nå i ett drag. Max 8
-	* Visas med svarta cirklar
-
-Damen kan inte placeras var som helst.  
-T ex inte på a4, då kan springaren inte nå a1.  
-Detta pga att springare och dam ej får ta varandra.  
+	* Visas med vita cirklar
+* count: antal drag för aktuell target. Oftast 0,1,2 eller 3.
+* counts: lista med antal drag för alla tagna targets.
+* mask: 0,1,2 eller 3. Används för att visa damens och springarens möjliga drag.
+* info: Visar antal drag och totaltid.
+* start: tiden då man började lösa uppgiften.
 
 # SolidJS
 
