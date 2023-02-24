@@ -1,6 +1,6 @@
 import _ from 'https://cdn.skypack.dev/lodash'
-import {abs,N,col,row,log,Position,range,signal,effect,r4r,sum} from '/js/utils.js'
-import {svg,rect,text,circle,g} from '/js/utils.js'
+import {abs,N,col,row,log,Position,range,signal,effect,r4r,sum} from '../js/utils.js'
+import {svg,rect,text,circle,g} from '../js/utils.js'
 
 QUEEN = '♛' 
 KNIGHT = '♘'
