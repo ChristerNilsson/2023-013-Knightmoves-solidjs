@@ -22,7 +22,7 @@ S = 62 # square size
 [start,setStart] = signal 0
 
 show = (a,b) =>
-	log a,b
+	#log a,b
 	b
 
 makeState = (state) => show 'state', state
