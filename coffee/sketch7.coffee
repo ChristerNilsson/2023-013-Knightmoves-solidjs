@@ -22,7 +22,7 @@ S = 62 # square size
 [start,setStart] = signal 0
 
 show = (a,b) =>
-	#log a,b
+	log a,b
 	b
 
 makeState = (state) => show 'state', state
@@ -41,7 +41,7 @@ makeQueens = => # anger de rutor som damen kan placeras på
 
 makeQueen = (queen) => show 'queen', queen
 
-makeMask = (queen) => show 'mask', 3 - (row(queen)+col(queen)) % 4
+makeMask = (queen) => show 'mask', 3 - (2*(col(queen) % 2) + row(queen) % 2)
 
 makeIllegals = (queen) =>
 	if queen==-1 then return []
@@ -87,10 +87,7 @@ makeKnightHops = (knight) =>
 	res.sort (a,b) -> a-b
 	show 'knightHops', res
 
-click = (index) ->
-	if state() == 0 then state0 index
-	else if state() == 1 then state1 index
-	else state2 index
+click = (index) -> [state0,state1,state2][state()] index
 
 state0 = (index) => # handle queen clicks
 	if index in queens()
@@ -114,13 +111,13 @@ state1 = (index) => # handle knight clicks
 		setKnightHops makeKnightHops knight()
 		setCount makeCount count() + 1
 		if target() == index
-			if taken() == targets().length - 1
+			setTaken makeTaken taken() + 1
+			setTarget makeTarget targets()[taken()]
+			setCounts makeCounts _.concat counts(), count()
+			setCount makeCount 0
+			if taken() == targets().length # - 1
 				setState makeState 2
-			else
-				setTaken makeTaken taken() + 1
-				setTarget makeTarget targets()[taken()]
-				setCounts makeCounts _.concat counts(), count()
-				setCount makeCount 0
+			# else
 	else log 'not a valid knight position'
 
 state2 = => setState makeState 0
@@ -137,14 +134,20 @@ showRects = =>
 		do (i) =>
 			rect {x, y, width, height, fill, onClick: => click i}
 
-showLittera = =>
-	style = {"text-anchor":"middle", "font-size":0.5*S, fill:"black"}
+showLittera = (flag) =>
+	col1 = "black"
+	col2 = "white"
+	style = {"text-anchor":"middle", "font-size":0.5*S}
 	for i in range N
 		x = S*(1.5+i)
 		y = S*(0.7+N-i)
+		col3 = if flag then [col2,col1][i%2] else col1
 		g {},
+			if flag and i%2==0 then circle {cx:x, cy:S*(N+1.6), r:0.3*S, fill:col2, stroke:col1}
+			if flag and i%2==0 then circle {cx:S*(0.5), cy:y-10,r:0.3*S, fill:col1, stroke:col2}
+
 			text _.merge({x, y:S*(N+1.7)}, style), "abcdefgh"[i]
-			text _.merge({x:S*(0.5), y},   style), "12345678"[i]
+			text _.merge({x:S*(0.5), y, fill:col3},style), "12345678"[i]
 
 showPieces = (pieces,PIECE,props) =>
 	for piece in pieces
@@ -181,13 +184,10 @@ showCounts = (counts) =>
 showInfo = (info) =>
 	style = {x:5*S, "text-anchor":"middle", "font-size":0.5*S, fill:"black"}
 	g {},
-		if state()==0
-			text _.merge({y:S*(N+2.5+0)}, style), 'Click on any queen to start.'
-		if state() == 1
-			text _.merge({y:S*(N+2.5+0)}, style), 'Move the knight to the ring.'
-		if state()==2
-			text _.merge({y:S*(N+2.5+0)}, style), sum(counts()), ' moves took ',(new Date() - start())/1000,' seconds.'
-			text _.merge({y:S*(N+2.5+1)}, style), 'Click to continue.'
+		if state() == 0 then text _.merge({y:S*(N+2.5+0)}, style), 'Click on any queen to start.'
+		if state() == 1 then text _.merge({y:S*(N+2.5+0)}, style), 'Move the knight to the ring.'
+		if state() == 2 then text _.merge({y:S*(N+2.5+0)}, style), sum(counts()), ' moves took ',(new Date() - start())/1000,' seconds.'
+		if state() == 2 then text _.merge({y:S*(N+2.5+1)}, style), 'Click to continue.'
 
 setState makeState 0
 setQueens makeQueens()
@@ -197,12 +197,12 @@ ILLEGALS    = {stroke:"none",   fill:"black", r:6}
 KNIGHT_HOPS = {stroke:"none",   fill:"white", r:6}
 
 r4r => # Har ej förstått varför TVÅ loopar behövs.
-	svg
+	svg {pointerEvents: null},
 		viewBox : "0 0 #{10*S} #{12*S}"
 		width : 8*S
 		height : 8*S
 		showRects()
-		showLittera()
+		=> showLittera state() == 0
 		=> showInfo info()
 		=> if state() == 0 then showPieces queens(),QUEEN, {fill:"black"}
 		=> if state() == 1
@@ -217,4 +217,5 @@ r4r => # Har ej förstått varför TVÅ loopar behövs.
 			g {},
 				showCounts counts()
 				showPieces [queen()], QUEEN, {fill:"black"}
+				showPieces [knight()], KNIGHT, {fill:"white"}
 				if mask() & 1 then showCircles illegals(),ILLEGALS
